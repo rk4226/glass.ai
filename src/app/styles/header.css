@@ -1,0 +1,46 @@
+.glass-text {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  position: relative;
+  width: fit-content;
+}
+
+.glass-text::after {
+  content: "";
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 2.5rem;
+  background: white;
+  animation: blink 0.8s infinite;
+}
+
+.glass-text-content {
+  opacity: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+  animation: typing 0.8s steps(8) infinite alternate,
+             erasing 0.8s steps(8) infinite alternate-reverse;
+  animation-delay: var(--typing-delay, 1s), var(--erasing-delay, 2s);
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes erasing {
+  from { width: 100% }
+  to { width: 0 }
+} 
