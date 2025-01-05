@@ -34,7 +34,6 @@ export default function Images() {
   const [error, setError] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [pixels, setPixels] = useState<number[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
     if (loading) {
@@ -83,7 +82,6 @@ export default function Images() {
 
   const handleSuggestionClick = (suggestion: string) => {
     setPrompt(suggestion);
-    setShowSuggestions(false);
   };
 
   return (
@@ -173,7 +171,6 @@ export default function Images() {
                       }
                     }
                   }}
-                  onFocus={() => setShowSuggestions(true)}
                 />
               </div>
               <button
