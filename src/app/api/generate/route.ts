@@ -11,32 +11,28 @@ export async function POST(req: Request) {
     });
 
     console.log('Starting image generation...');
-    const output = await replicate.run(
-      "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
-      {
-        input: {
-          prompt: prompt,
-          negative_prompt: "low quality, bad anatomy, worst quality, low resolution",
-          num_outputs: 1,
-          scheduler: "K_EULER",
-          num_inference_steps: 50,
-        }
+    const prediction = await replicate.predictions.create({
+      version: "39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
+      input: {
+        prompt: prompt,
+        negative_prompt: "low quality, bad anatomy, worst quality, low resolution",
+        num_outputs: 1,
+        scheduler: "K_EULER",
+        num_inference_steps: 50,
       }
-    ) as string[];
+    });
 
-    console.log('Replicate output:', output);
+    // Wait for the prediction to complete
+    let result = await replicate.wait(prediction);
+    console.log('Replicate result:', result);
 
-    if (!output || !output[0]) {
-      console.error('No output from Replicate');
+    if (!result?.output?.[0]) {
       throw new Error('No image generated');
     }
 
-    const imageUrl = output[0];
-    console.log('Generated image URL:', imageUrl);
-
     return NextResponse.json({ 
       success: true, 
-      imageUrl: imageUrl
+      imageUrl: result.output[0]
     });
   } catch (error) {
     console.error('Detailed error:', error);

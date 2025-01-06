@@ -14,17 +14,22 @@ const PROMPT_SUGGESTIONS = [
 const downloadImage = async (imageUrl: string) => {
   try {
     const response = await fetch(imageUrl);
+    if (!response.ok) throw new Error('Failed to fetch image');
+    
     const blob = await response.blob();
+    if (blob.size === 0) throw new Error('Empty image file');
+
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `glass-ai-${Date.now()}.png`; // unique filename
+    a.download = `glass-ai-${Date.now()}.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
   } catch (error) {
     console.error('Download error:', error);
+    alert('Failed to download image. Please try again.');
   }
 };
 
