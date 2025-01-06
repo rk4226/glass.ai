@@ -71,7 +71,7 @@ export default function Images() {
       }
 
       const data = await response.json();
-      setImageUrl(data.imagePath);
+      setImageUrl(data.imageUrl);
     } catch (err) {
       console.error('Generation error:', err);
       setError('Failed to generate image');

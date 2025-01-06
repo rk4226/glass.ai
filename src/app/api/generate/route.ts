@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
 import Replicate from "replicate";
-import { writeFile } from "node:fs/promises";
-import { join } from 'path';
 
 export async function POST(req: Request) {
   try {
@@ -20,23 +18,10 @@ export async function POST(req: Request) {
       }
     ) as string[];
 
-    // Fetch the image from the URL
-    const imageUrl = output[0];
-    const imageResponse = await fetch(imageUrl);
-    const imageBuffer = await imageResponse.arrayBuffer();
-
-    // Generate unique filename using timestamp
-    const timestamp = Date.now();
-    const filename = `generated-image-${timestamp}.png`;
-    
-    // Save the image locally with unique filename
-    const imagePath = join(process.cwd(), 'public', filename);
-    await writeFile(imagePath, Buffer.from(imageBuffer));
-
+    // Return the image URL directly
     return NextResponse.json({ 
       success: true, 
-      imagePath: `/${filename}`,
-      imageUrl: imageUrl
+      imageUrl: output[0]  // Replicate returns the URL in output[0]
     });
   } catch (error) {
     console.error('Error:', error);
