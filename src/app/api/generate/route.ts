@@ -22,17 +22,21 @@ export async function POST(req: Request) {
       }
     });
 
-    // Wait for the prediction to complete
-    let result = await replicate.wait(prediction);
-    console.log('Replicate result:', result);
+    // Poll until the prediction is complete
+    let finalPrediction = await replicate.predictions.get(prediction.id);
+    while (finalPrediction.status !== 'succeeded' && finalPrediction.status !== 'failed') {
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+      finalPrediction = await replicate.predictions.get(prediction.id);
+      console.log('Prediction status:', finalPrediction.status);
+    }
 
-    if (!result?.output?.[0]) {
-      throw new Error('No image generated');
+    if (finalPrediction.status === 'failed' || !finalPrediction.output?.[0]) {
+      throw new Error('Image generation failed');
     }
 
     return NextResponse.json({ 
       success: true, 
-      imageUrl: result.output[0]
+      imageUrl: finalPrediction.output[0]
     });
   } catch (error) {
     console.error('Detailed error:', error);
