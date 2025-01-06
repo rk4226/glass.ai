@@ -18,10 +18,13 @@ export async function POST(req: Request) {
       }
     ) as string[];
 
-    // Return the image URL directly
+    if (!output || !output[0]) {
+      throw new Error('No image generated');
+    }
+
     return NextResponse.json({ 
       success: true, 
-      imageUrl: output[0]  // Replicate returns the URL in output[0]
+      imageUrl: output[0]  // Use the Replicate URL directly
     });
   } catch (error) {
     console.error('Error:', error);
